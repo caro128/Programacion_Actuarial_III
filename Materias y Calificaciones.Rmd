@@ -1,0 +1,99 @@
+---
+title: "Materias y Calificaciones"
+author: "Carolina Arce Mendoza"
+date: "03/02/2017"
+output:
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+## Historial Académico
+### Primer Semestre 
+#### Otoño 2013
+Programación Actuarial I 5
+
+Introducción a la Profesión Actuarial 8
+
+DHPC 9
+
+Conceptos de Cálculo 5
+
+Matemáticas Básicas 5
+
+Problemas de Matemáticas Básicas 5
+
+### Segundo Semestre 
+#### Primavera 2014
+Programación Actuarial I 7
+
+Microeconomía 9
+
+Formación Humana y Social 9
+
+Conceptos de Cálculo 8
+
+Matemáticas Básicas 9
+
+Problemas de Matemáticas Básicas 9
+
+### Tercer Semestre 
+#### Otoño 2014
+Teoría del Interés I 7
+
+Registro Académico y Científico del Español 8
+
+Cálculo Diferencial 7
+
+Teoría de Ecuaciones 10
+
+### Cuarto Semestre 
+#### Primavera 2015
+Programación Actuarial II 5
+
+Teoría del Interés II 7
+
+Macroeconomía 8
+
+Calculo Integral 8
+
+Geometría Analítica 8
+
+Álgebra Lineal I 9
+
+### Quinto Semestre 
+#### Otoño 2015
+Contabilidad General 7
+
+Sistema Financiero Mexicano 10
+
+Demografía 8
+
+Cálculo Diferencial en Varias Variables 5
+
+Ecuaciones Diferenciales 8
+
+Probabilidad I 5
+
+### Sexto Semestre 
+#### Primavera 2016
+Matemáticas Actuariales I 6
+
+DHTIC 10
+
+Cálculo Diferencial en Varias Variables 6
+
+Probabilidad I 6
+
+### Séptimo Semestre 
+#### Otoño 2016
+Programación Actuarial II 8
+
+Legislación de Seguros 10
+
+Matemáticas Actuariales II 9
+
+Cálculo Integral en Varias Variables 9
+
+Probabilidad II 8

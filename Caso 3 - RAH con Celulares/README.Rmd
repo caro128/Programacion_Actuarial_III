@@ -1,0 +1,121 @@
+---
+title: "README"
+author: "Yessica Pantaleon, Carolica Arce, Mishelle Herrera, Adrián Lara"
+date: "8 de junio de 2017"
+output: html_document
+---
+
+#CASO 3: RECONOCIMIENTO DE ACTIVIDAD HUMANA CON CELULARES
+
+El objetivo de este caso es el uso de las herramientas de R con las cuales se pueden hacer una depuración y ordenamiento de
+los datos y posteriormente al hacerle el filtro a estos datos crear una nueva base de datos donde la información se encuentre
+en orden y asi poder usar adecuadamente y facílmente la información.
+
+A continuación te dejamos el link donde podrás descargar la base de datos con la que trabajamos:
+https://www.dropbox.com/s/j26ksrw1jzqz2a1/getdata-projectfilesUCI%20HAR%20Dataset.zip?dl=0
+
+Ahora hablemos del caso:
+Se grabaron a 30 personas de entre 19-48 años donde cada uno realizó las siguientes actividades:
+WALKING, WALKING_UPSTAIRS, WALKING_DOWNSTAIRS, SITTING, STANDING, LAYING
+con un smartphone con sensores inerciales incorporados, analizando las reacciones en estos sensores
+Si deseas leer el caso completo, t invitamos a leer el caso completo en la siguiente liga:
+ http://archive.ics.uci.edu/ml/datasets/Human+Activity+Recognition+Using+Smartphones
+
+##¿Qué hace el código?
+Dentro de la Carpeta podemos encontrar el archivo correr_análisis.R
+El cual realiza las siguientes acciones:
+  - Une los datos de los archivos test con los de los archivos training y asi generar un solo conjunto de datos
+    con el cuál estaremos trabajando
+  - Extrae las medidas de media y desviación estándar de cada medición.
+  - Posteriormente se usa los nombres de las actividades descritas en el caso que serán descritos con los nombres 
+    de las actividades correspondientes y así colocar los nombres apropiados en la base de datos con etiquetas de
+    variables que las describan.
+  - Por últmo se crea una segunda base de datos con el promedio de cada variable para cada actividad y cada sujeto.
+
+###¿Cómo funciona el código?
+Primero recuerda establecer el directorio de trabajo en este caso será:
+
+ Después abrimos los archivos a utilizar de test y train:
+xtr <-read.table("./train/X_train.txt")
+ytr <-read.table("./train/Y_train.txt")
+str <-read.table("./train/subject_train.txt")
+
+xts <- read.table("./test/X_test.txt")
+yts <- read.table("./test/y_test.txt")
+sts <- read.table("./test/subject_test.txt")
+
+Ahora con ayuda de la función rbind cobinamos los archivos
+dtX <- rbind(xtr, xts)
+dtY <- rbind(ytr, yts)
+dtS <- rbind(str, sts)
+Para así poder remover los que ya no nos serán útiles
+rm(xtr)
+rm(ytr)
+rm(str)
+rm(xts)
+rm(yts)
+rm(sts)
+Ahora de acuerdo al caso se extraen la media y la desvación estándar de cada medición del archivo features.txt
+y quitamos lo que no es útil:
+
+caracteristicas <- read.table("./features.txt")
+promedioStdIndex <- grep("mean\\(\\)|std\\(\\)", caracteristicas[, 2])
+dtX <- dtX[, promedioStdIndex]
+names(dtX) <- gsub("\\(\\)", "", caracteristicas[promedioStdIndex, 2])
+names(dtX) <- gsub("mean", "Mean", names(dtX)) 
+names(dtX) <- gsub("std", "Std", names(dtX)) 
+names(dtX) <- gsub("-", "", names(dtX)) 
+
+Nuevamente removemos lo que ya no será útil:
+rm(caracteristicas)
+rm(promedioStdIndex)
+
+Ahora con ayuda del archivo activity_labels.txt llamamos las actividades en la nueva base de datos
+actividad <- read.table("./activity_labels.txt")
+actividad[, 2] <- tolower(gsub("_", "", actividad[, 2])) 
+substr(actividad[2, 2], 8, 8) <- toupper(substr(actividad[2, 2], 8, 8)) 
+substr(actividad[3, 2], 8, 8) <- toupper(substr(actividad[3, 2], 8, 8)) 
+dtY[, 1] <- actividad[dtY[, 1], 2]
+names(dtY) <- "actividad"
+
+Ahora renombramos las etiquetas para la nueva base de datos en este caso hemos combinado las etiquetas de 
+cada dirección
+names(dtS) <- "sujeto"
+cleandata <- cbind(dtS, dtY, dtX)
+
+
+Volvemos a remover la información que no es útil
+rm(dtX)
+rm(dtY)
+
+Ahora crearemos la nueva base de datos con la información que hemos limpiado, utilizando el promedio de cada 
+medición y asi agilizar el uso de la información y a su vez completamos la base de datos
+
+SLen <- length(table(dtS)) 
+actividadLen <- dim(actividad)[1]
+colLen <- dim(cleandata)[2]
+op <- as.data.frame(matrix(NA, nrow=SLen*actividadLen, ncol=colLen))
+colnames(op) <- colnames(cleandata)
+
+f <- 1
+for(i in 1:SLen) {
+    for(j in 1:actividadLen) {
+        op[f, 1] <- sort(unique(dtS)[, 1])[i]
+        op[f, 2] <- actividad[j, 2]
+        die1 <- i == cleandata$sujeto
+        die2 <- actividad[j, 2] == cleandata$actividad
+        op[f, 3:colLen] <- colMeans(cleandata[die1&die2, 3:colLen])
+        f <- f + 1
+    }
+}
+
+Por último guardamos nuetra información generada en una nueva base de datos(en este caso un archivo de texto)
+Donde se utilizan a los 30 sujetos y sus promedios de cada una de las 66 mediciones en cada una de las
+actividades antes mencionadas.
+ 
+write.table(op, "Completed.txt", row.name=FALSE)
+
+##¿Qué otro contenido existe en el caso?
+Aquí también podras encontrar el archivo "Completed.txt" en el cual podrás encontrar los datos ordenados
+El archivo "CodeBook.Rmd" describe las variables y funciones utilizadas.
+

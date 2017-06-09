@@ -1,0 +1,81 @@
+---
+title: "Programación Actuarial III"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#Caso 3: Reconocimiento de Actividad Humana con Celulares
+
+##Libro de Código
+
+###Descripción de la Base de Datos
+Se realizaron experimentos a un grupo de 30 voluntarios, de entre 19 a 48 años, durante la realización de seis actividades: caminar, subir escaleras, bajar escaleras, estar sentado, estar de pie y estar acostado mientras usaban un teléfono inteligente Samsung Galaxy SII en la cintura.
+
+Utilizando su acelerómetro y giroscopio incorporados, captamos la aceleración lineal 3-axial y la velocidad angular 3-axial a una velocidad constante de 50Hz. Los experimentos se han grabado en video para etiquetar los datos manualmente. El conjunto de datos obtenido ha sido dividido aleatoriamente en dos series, donde se selecciona el 70% de los voluntarios para generar los datos de entrenamiento y el 30% de los datos de la prueba.
+
+Las señales de los sensores (acelerómetro y giroscopio) fueron pre-procesadas aplicando filtros de ruido y luego muestras en ventanas corredizas de 2.56 seg y 50% de superposición (128 lecturas/ventana). 
+
+La señal de aceleración del sensor, que tiene componentes gravitacionales y de movimiento corporal, se separa usando un filtro de paso bajo de Butterworth en la aceleración del cuerpo y la gravedad. Se supone que la fuerza gravitacional solo tiene componentes de baja frecuencia, por lo que se utilizó un filtro con una frecuencia de corte de 0,3 Hz. A partir de cada ventana, se obtuvo un vector de características calculando variables a partir del dominio de tiempo y frecuencia.
+
+Para cada registro en el conjunto de datos se proporciona:
+    - Aceleración triaxial del acelerómetro y la aceleración estimada del cuerpo.
+    - Velocidad triaxial angular del giroscopio.
+    - Un vector de 561 características con variables de dominio de tiempo y frecuencia.
+    - Su etiqueta de actividad.
+    - Un identificador del sujeto que realizó el experimento.
+
+###Variables
+Las señales que fueron utilizadas para estimar las variables del vector, para cada patrón "XYZ" denotan las señales de 3 ejes en direcciones X, Y y Z, donde las variables obtenidas a partir de estas señales son:
+
+
+mean(): Valor medio.
+
+std(): Desviación estándar.
+
+mad(): Desviación absoluta media.
+
+max(): El mayor valor en array.
+
+min(): El valor más pequeño en matriz.
+
+sma(): área de magnitud de la señal.
+
+energy(): Medida de energía. Suma de los cuadrados divididos por el número de valores.
+
+iqr(): Intervalo intercuartílico.
+
+entropy(): entropía de señal.
+
+arCoeff(): coeficientes de autorregresión con orden Burg igual a 4.
+
+correlation(): coeficiente de correlación entre dos señales.
+
+maxInds(): índice de la componente de frecuencia con mayor magnitud.
+
+meanFreq(): Promedio ponderado de los componentes de frecuencia para obtener una frecuencia media.
+
+skewness(): asimetría de la señal del dominio de frecuencia.
+
+kurtosis(): kurtosis de la señal del dominio de la frecuencia.
+
+bandsEnergy(): Energía de un intervalo de frecuencia dentro de los 64 contenedores de la FFT de cada ventana.
+
+angle(): Ángulo entre los vectores.
+
+###Transformaciones
+Las transformaciones que fueron hechas a la base de datos original, fueron:
+
+1. Unión de los archivos, "datos test"" y "training"".
+
+2. Colocar las descripciones adecuadas en la base de datos con los nombres de las variables que vayan de acuerdo con ellas.
+
+3. Cambio de nombre a las actividades para describir de mejor manera la base de datos y asignar valores entre 1 y 30 para cada sujeto de prueba.
+
+4. Extracción de la media y desviación estándar de cada medición, dejando solamente 66 datos. 
+
+5. Creación de la base de datos final, con el promedio de cada variable para cada actividad y cada sujeto de 180 filas por 68 columnas.
